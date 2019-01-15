@@ -1,0 +1,369 @@
+DROP DATABASE IF EXISTS ndavis_BGTclass;
+
+
+CREATE DATABASE ndavis_BGTclass;
+DROP TABLE IF EXISTS ndavis_BGTclass.RECORDS;
+CREATE TABLE ndavis_BGTclass.RECORDS (
+    `JobID` BIGINT NOT NULL,
+    `State_ID` INT NOT NULL,
+    `State_Name` VARCHAR(30) NOT NULL,
+    `MSA_ID` BIGINT DEFAULT NULL,
+    `MSA_Name` VARCHAR(255) DEFAULT NULL,
+    `County` VARCHAR(255) DEFAULT NULL,
+    `Occupation_Code` BIGINT DEFAULT NULL,
+    `Occupation_Name` VARCHAR(255) DEFAULT NULL,
+    `Occupation_Title` VARCHAR(255) DEFAULT NULL,
+    `Degree_Level` VARCHAR(75) DEFAULT NULL,
+    `Experience_Level` VARCHAR(30) DEFAULT NULL,
+    `Edu_Major` VARCHAR(300) DEFAULT NULL,
+    `Salary` BIGINT DEFAULT NULL,
+    `Posting_Duration` INT NOT NULL,
+    `Skill_ID` BIGINT DEFAULT NULL,
+    `Skill_Name` VARCHAR(255) DEFAULT NULL,
+    `Skill_Type` BIGINT DEFAULT NULL,
+    `Cert_ID` BIGINT DEFAULT NULL,
+    `Cert_Name` VARCHAR(255) DEFAULT NULL,
+    `Degree_ID` INT DEFAULT NULL,
+    `Major_ID` INT DEFAULT NULL,
+    `Exp_ID` INT DEFAULT NULL,
+    `Title_ID` INT DEFAULT NULL,
+    `County_ID` INT DEFAULT NULL
+);
+
+LOAD DATA LOCAL INFILE 'C://Users//Owner//Desktop//Level//BGT_class.csv'
+INTO TABLE ndavis_BGTclass.RECORDS
+
+
+FIELDS TERMINATED BY ',' 
+LINES TERMINATED BY '\n' 
+IGNORE 1 LINES;
+
+
+
+SELECT  *
+FROM ndavis_BGTclass.RECORDS;
+
+SELECT 
+    COUNT(*)
+FROM
+    ndavis_BGTclass.RECORDS;
+    
+SELECT 
+    *
+FROM
+    ndavis_BGTclass.RECORDS
+LIMIT 1;
+
+SET SQL_SAFE_UPDATES = 0;
+
+
+UPDATE ndavis_BGTclass.RECORDS 
+SET  MSA_ID = NULL
+WHERE MSA_ID = 0;
+
+UPDATE ndavis_BGTclass.RECORDS 
+SET Occupation_Code = NULL
+WHERE Occupation_Code = 0;
+-- 
+UPDATE ndavis_BGTclass.RECORDS 
+SET Skill_ID = NULL
+WHERE Skill_ID = 0;
+
+UPDATE ndavis_BGTclass.RECORDS 
+SET Cert_ID = NULL
+WHERE Cert_ID = 0;
+   
+UPDATE ndavis_BGTclass.RECORDS 
+SET Major_ID = NULL
+WHERE Major_ID = 0;
+    
+UPDATE ndavis_BGTclass.RECORDS 
+SET Occupation_Name = NULL
+WHERE Occupation_Name = 'NA';
+
+UPDATE ndavis_BGTclass.RECORDS 
+SET Cert_Name = NULL
+WHERE Cert_Name = 'NA';
+     
+UPDATE ndavis_BGTclass.RECORDS 
+SET MSA_Name = NULL
+WHERE MSA_Name = 'NA';
+
+UPDATE BGTclass.RECORDS 
+SET County = NULL
+WHERE County = 'NA';
+ 
+UPDATE ndavis_BGTclass.RECORDS 
+SET Occupation_Title = NULL
+WHERE Occupation_Title = 'NA';
+  
+UPDATE ndavis_BGTclass.RECORDS 
+SET Edu_Major = NULL
+WHERE Edu_Major = 'NA';
+
+UPDATE ndavis_BGTclass.RECORDS 
+SET Skill_Name = NULL
+WHERE Skill_Name = 'NA';
+
+UPDATE ndavis_BGTclass.RECORDS 
+SET Title_ID = NULL
+WHERE Title_ID = 0;
+
+UPDATE ndavis_BGTclass.RECORDS 
+SET County_ID = NULL
+WHERE County_ID = 0;
+
+UPDATE ndavis_BGTclass.RECORDS 
+SET Major_ID = NULL
+WHERE Major_ID = 0;
+
+SELECT *
+FROM ndavis_BGTclass.RECORDS
+LIMIT 10;
+
+drop table if exists ndavis_BGTclass.Jobs;
+
+
+CREATE TABLE ndavis_BGTclass.Jobs (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    JobID BIGINT(20) NOT NULL,
+    Occupation_Code BIGINT(20) NOT NULL,
+    Title_ID INT(11),
+    Exp_ID INT(11),
+    MSA_ID BIGINT (20),
+    state_id INT(11),
+    County_ID INT(11),
+    Posting_Duration INT(11),
+    Salary BIGINT (20),
+    SOC VARCHAR(255),
+    KEY (ID)
+);
+
+SELECT DISTINCT JobID,
+    Occupation_Code,
+    Title_ID,
+    Exp_ID,
+    MSA_ID,
+    State_ID,
+    County_ID,
+    Posting_Duration,
+    Salary FROM
+    ndavis_BGTclass.RECORDS;
+    
+
+DROP TABLE IF EXISTS ndavis_BGTclass.Jobs_Skills;
+CREATE TABLE ndavis_BGTclass.Jobs_Skills
+SELECT DISTINCT JobID, Skill_ID 
+FROM ndavis_BGTclass.RECORDS;
+
+DROP TABLE IF EXISTS ndavis_BGTclass.Skills;
+CREATE TABLE ndavis_BGTclass.Skills 
+SELECT DISTINCT Skill_ID, Skill_Type, Skill_Name 
+FROM ndavis_BGTclass.RECORDS
+WHERE Skill_ID IS NOT NULL;
+
+DROP TABLE IF EXISTS ndavis_BGTclass.Job_Majors;
+CREATE TABLE ndavis_BGTclass.Jobs_Majors 
+SELECT DISTINCT JobID, Major_ID 
+FROM ndavis_BGTclass.RECORDS
+WHERE Major_ID IS NOT NULL;
+
+DROP TABLE IF EXISTS ndavis_BGTclass.Majors;
+CREATE TABLE ndavis_BGTclass.Majors 
+SELECT DISTINCT Major_ID, Edu_Major 
+FROM ndavis_BGTclass.RECORDS
+WHERE Major_ID IS NOT NULL;
+
+DROP TABLE IF EXISTS ndavis_BGTclass.Job_Degrees;    
+CREATE TABLE ndavis_BGTclass.Jobs_Degrees 
+SELECT DISTINCT JobID, Degree_ID 
+FROM ndavis_BGTclass.RECORDS
+WHERE Degree_ID IS NOT NULL;
+
+DROP TABLE IF EXISTS ndavis_BGTclass.Degrees;
+CREATE TABLE ndavis_BGTclass.Degrees 
+SELECT DISTINCT Degree_ID, Degree_Level 
+FROM
+    ndavis_BGTclass.RECORDS
+WHERE
+    Degree_ID IS NOT NULL;
+
+DROP TABLE IF EXISTS ndavis_BGTclass.Jobs_Certs;
+CREATE TABLE ndavis_BGTclass.Jobs_Certs 
+SELECT DISTINCT JobID, Cert_ID 
+FROM
+    ndavis_BGTclass.RECORDS
+WHERE
+    Cert_ID IS NOT NULL;
+
+DROP TABLE IF EXISTS ndavis_BGTclass.Certs;
+CREATE TABLE ndavis_BGTclass.Certs 
+SELECT DISTINCT Cert_ID, Cert_Name 
+FROM
+    ndavis_BGTclass.RECORDS
+WHERE
+    cert_ID IS NOT NULL;
+    
+DROP TABLE IF EXISTS ndavis_BGTclass.Occupations;
+CREATE TABLE ndavis_BGTclass.Occupations 
+SELECT DISTINCT Occupation_Code, Occupation_Name FROM
+    ndavis_BGTclass.RECORDS
+WHERE
+    occupation_code IS NOT NULL;
+    
+DROP TABLE IF EXISTS ndavis_BGTclass.Exp_Levels;
+CREATE TABLE ndavis_BGTclass.Exp_Levels 
+SELECT DISTINCT Exp_ID, Experience_Level FROM
+    ndavis_BGTclass.RECORDS
+WHERE
+    exp_id IS NOT NULL;
+    
+DROP TABLE IF EXISTS ndavis_BGTclass.MSAs;
+CREATE TABLE ndavis_BGTclass.MSAs 
+SELECT DISTINCT MSA_ID, MSA_Name FROM
+    ndavis_BGTclass.RECORDS
+WHERE
+    MSA_ID IS NOT NULL;
+    
+DROP TABLE IF EXISTS ndavis_BGTclass.Titles;
+CREATE TABLE ndavis_BGTclass.Titles 
+SELECT DISTINCT Title_ID, Occupation_Title FROM
+    ndavis_BGTclass.RECORDS
+WHERE
+    Title_ID IS NOT NULL;
+    
+DROP TABLE IF EXISTS ndavis_BGTclass.States;
+CREATE TABLE ndavis_BGTclass.States 
+SELECT DISTINCT State_ID, State_Name FROM
+    ndavis_BGTclass.RECORDS
+WHERE
+    state_id IS NOT NULL;
+
+DROP TABLE IF EXISTS ndavis_BGTclass.Counties;
+CREATE TABLE ndavis_BGTclass.Counties 
+SELECT DISTINCT County_ID, County FROM
+    ndavis_BGTclass.RECORDS
+WHERE
+    County_ID IS NOT NULL;
+
+ALTER TABLE ndavis_BGTclass.Skills
+ADD PRIMARY KEY (Skill_ID);
+
+
+ALTER TABLE ndavis_BGTclass.Certs
+ADD PRIMARY KEY (Cert_ID);
+
+ALTER TABLE ndavis_BGTclass.Degrees
+ADD PRIMARY KEY (Degree_ID);
+
+ALTER TABLE ndavis_BGTclass.Majors
+ADD PRIMARY KEY (Major_ID);
+
+
+ALTER TABLE ndavis_BGTclass.Occupations
+ADD PRIMARY KEY (Occupation_Code);
+
+ALTER TABLE ndavis_BGTclass.MSAs
+ADD PRIMARY KEY (MSA_ID);
+
+ALTER TABLE ndavis_BGTclass.Exp_Levels
+ADD PRIMARY KEY (Exp_ID);
+
+
+ALTER TABLE ndavis_BGTclass.Titles
+ADD primary key (Title_ID);
+
+Alter TABLE ndavis_BGTclass.Counties
+ADD primary key (County_ID);
+
+ALTER TABLE ndavis_BGTclass.States
+ADD primary key (State_ID);
+
+ALTER TABLE ndavis_BGTclass.Jobs_Skills
+ADD FOREIGN KEY (Skill_ID) 
+	REFERENCES Skills (Skill_ID);
+
+ALTER TABLE Jobs_Majors
+ADD FOREIGN KEY (Major_ID)
+	REFERENCES Majors (Major_ID);
+
+
+ALTER TABLE Jobs_Certs 
+ADD FOREIGN KEY (Cert_ID)  
+	REFERENCES Certs(Cert_ID);	
+
+ALTER TABLE Jobs 
+ADD FOREIGN KEY (Occupation_Code)  
+	REFERENCES Occupations (Occupation_Code);
+
+
+ALTER TABLE Jobs 
+ADD FOREIGN KEY (Title_ID)  
+	REFERENCES Titles(Title_ID);
+    
+ALTER TABLE Jobs 
+ADD FOREIGN KEY (Occupation_Code)  
+	REFERENCES Occupations (Occupation_Code);
+    
+ALTER TABLE Jobs 
+ADD FOREIGN KEY (Exp_ID)  
+	REFERENCES Exp_Levels (Exp_ID);
+
+ALTER TABLE Jobs 
+ADD FOREIGN KEY (MSA_ID)  
+	REFERENCES MSAs (MSA_ID);
+    
+ALTER TABLE Jobs 
+ADD FOREIGN KEY (State_ID)  
+	REFERENCES States (State_ID);
+    
+ALTER TABLE Jobs 
+ADD FOREIGN KEY (County_ID)  
+	REFERENCES Counties (County_ID);
+
+
+
+Select distinct (Occupation_Name)
+FROM Occupations;
+
+Select count(distinct(Occupation_Name))
+FROM Occupations;
+
+CREATE VIEW abc AS
+SELECT *
+FROM States;
+
+
+select *
+FROM States;
+
+select distinct(State_ID)
+FROM RECORDS;
+
+DROP VIEW IF EXISTS States_Occupations;
+CREATE VIEW States_Occupations AS
+SELECT (States.State_Name)
+FROM States 
+RIGHT JOIN RECORDS
+ON States.State_ID = RECORDS.State_ID;
+
+
+SELECT State_Name, COUNT(*) AS Total
+FROM RECORDS 
+GROUP BY State_ID
+ORDER BY Total DESC;
+
+DROP VIEW IF EXISTS Posting_Total;
+CREATE VIEW Posting_Total AS
+Select Skill_Name, count(*) AS Total, Posting_Duration, Occupation_Name
+FROM RECORDS
+GROUP BY Skill_ID
+ORDER BY Total DESC;
+
+
+SELECT *
+FROM MSAs
+ORDER BY MSA_ID;
+
+SELECT *
+FROM Jobs;
